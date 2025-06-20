@@ -7,7 +7,7 @@
       </div>
       <el-menu
         active-text-color="#409EFF"
-        background-color="#304156"
+        background-color="#304100"
         class="el-menu-vertical"
         :default-active="route.path"
         text-color="#bfcbd9"
@@ -53,7 +53,9 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>个人中心</el-dropdown-item>
+              <router-link to="/profile" style="text-decoration: none;">
+                <el-dropdown-item>个人中心</el-dropdown-item>
+              </router-link>
               <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -72,7 +74,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
+// ★★★ 修改一：在 vue-router 中导入 RouterLink ★★★
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { House, Folder, Goods, ArrowDown, Camera, UserFilled } from '@element-plus/icons-vue';
@@ -95,34 +98,29 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
-/* ★★★ 核心修改：将布局控制应用到新的 div.layout-wrapper 上 ★★★ */
 .layout-wrapper {
   height: 100vh;
   width: 100%;
   display: flex;
 }
-
-/* 侧边栏和内容区的样式保持不变，它们现在是 .layout-wrapper 的子元素 */
 .sidebar {
-  /* el-aside 自带 width，我们只需控制背景等 */
   background-color: #304156;
   transition: width 0.28s;
   overflow-x: hidden;
 }
-
 .content-wrapper {
-  /* el-container 作为 flex 子项，让它智能地占据剩余空间 */
   flex: 1;
   min-width: 0;
-  /* 由于 el-container 默认的 flex-direction 是根据子元素决定的，
-    为了保险起见，我们明确指定它内部是垂直排列（顶部Header + 下方Main）
-  */
   display: flex;
   flex-direction: column;
 }
-
-
-/* --- 以下是其他的美化样式，保持不变 --- */
+.main-content {
+  flex: 1;
+  background-color: #f0f2f5;
+  padding: 20px;
+  position: relative;
+  overflow-y: auto;
+}
 .sidebar-logo {
   display: flex;
   align-items: center;
@@ -161,15 +159,6 @@ const handleLogout = () => {
 .avatar-wrapper .username {
   margin-left: 10px;
   margin-right: 5px;
-}
-.main-content {
-  /* 因为 content-wrapper 已经是 flex 布局了，
-     这里需要让 main-content 自动撑满剩余的垂直空间 */
-  flex: 1;
-  background-color: #f0f2f5;
-  padding: 20px;
-  position: relative;
-  overflow-y: auto;
 }
 .fade-transform-enter-active,
 .fade-transform-leave-active {

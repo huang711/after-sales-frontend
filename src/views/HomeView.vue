@@ -54,19 +54,22 @@
         </div>
       </template>
       <div class="shortcut-group">
-        <router-link to="/warehousing/create" class="shortcut-item">
+        <router-link to="/business/warehousing" class="shortcut-item">
           <div class="shortcut-icon-wrapper icon-inbound"><el-icon><CirclePlus /></el-icon></div>
           <span>创建入库单</span>
         </router-link>
-        <router-link to="/delivery/create" class="shortcut-item">
+        
+        <router-link to="/business/delivery" class="shortcut-item">
           <div class="shortcut-icon-wrapper icon-outbound"><el-icon><Remove /></el-icon></div>
           <span>创建出库单</span>
         </router-link>
-        <router-link to="/return/apply" class="shortcut-item">
+
+        <router-link to="/business/returns" class="shortcut-item">
           <div class="shortcut-icon-wrapper icon-return"><el-icon><RefreshLeft /></el-icon></div>
           <span>发起退货</span>
         </router-link>
-         <router-link to="/products/instances" class="shortcut-item">
+
+        <router-link to="/business/instances" class="shortcut-item">
           <div class="shortcut-icon-wrapper icon-search"><el-icon><Search /></el-icon></div>
           <span>查询库存实例</span>
         </router-link>
@@ -78,8 +81,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+// 导入需要的图标
 import { User, CameraFilled, Box, Tickets, CirclePlus, Remove, RefreshLeft, Search } from '@element-plus/icons-vue';
 
+// 定义用于展示的统计数据
 const userCount = ref(0);
 const productModelCount = ref(0);
 const inStockInstanceCount = ref(0);
@@ -90,20 +95,28 @@ onMounted(() => {
 });
 
 const fetchDashboardData = () => {
-  setTimeout(() => {
-    userCount.value = 3;
-    productModelCount.value = 2; 
-    inStockInstanceCount.value = 8;
-    deliveryTodayCount.value = 2;
-  }, 300); // 缩短延迟，因为我们有加载动画了
+    setTimeout(() => {
+        userCount.value = 3;
+        productModelCount.value = 2; 
+        inStockInstanceCount.value = 8;
+        deliveryTodayCount.value = 2;
+    }, 300);
 };
 </script>
 
 <style scoped>
-/* 顶部数据统计卡片样式 */
+.dashboard-container {
+  padding: 20px;
+}
+
 .panel-group {
   margin-bottom: 20px;
 }
+
+.card-panel-col {
+  margin-bottom: 20px;
+}
+
 .card-panel {
   height: 108px;
   cursor: pointer;
@@ -114,15 +127,17 @@ const fetchDashboardData = () => {
   background: #fff;
   box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
   border-color: rgba(0, 0, 0, .05);
-  border-radius: 4px; /* 增加圆角 */
+  border-radius: 4px;
   display: flex;
   align-items: center;
   padding: 0 20px;
   transition: all 0.3s ease-in-out;
 }
+
 .card-panel:hover {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
 }
+
 .card-panel-icon-wrapper {
   padding: 16px;
   transition: all 0.3s ease-out;
@@ -133,31 +148,34 @@ const fetchDashboardData = () => {
 .icon-camera { background: #36a3f7; }
 .icon-inventory { background: #f4516c; }
 .icon-records { background: #34bfa3; }
+
 .card-panel .el-icon {
   font-size: 48px;
 }
+
 .card-panel-description {
-  flex-grow: 1; /* 让描述部分占据剩余空间 */
+  flex-grow: 1;
   margin-left: 15px;
   text-align: center;
 }
+
 .card-panel-text {
   line-height: 18px;
   color: rgba(0, 0, 0, 0.45);
   font-size: 16px;
   margin-bottom: 12px;
 }
+
 .card-panel-num {
   font-size: 20px;
   font-weight: bold;
 }
 
-/* 快捷入口卡片样式 */
 .shortcuts-card {
     border-radius: 4px;
 }
 .shortcut-group {
-    display: grid; /* 使用 Grid 布局，更易于对齐 */
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
 }
@@ -171,15 +189,17 @@ const fetchDashboardData = () => {
   text-decoration: none;
   color: #303133;
   transition: all 0.3s;
+  background-color: #f9fafb;
 }
 .shortcut-item:hover {
-  transform: translateY(-5px); /* 悬浮时上移 */
+  transform: translateY(-5px);
   box-shadow: 0 4px 12px rgba(0,0,0,.1);
+  background-color: #fff;
 }
 .shortcut-icon-wrapper {
   font-size: 36px;
   padding: 15px;
-  border-radius: 50%; /* 圆形图标背景 */
+  border-radius: 50%;
   margin-bottom: 15px;
   color: #fff;
 }
@@ -187,7 +207,7 @@ const fetchDashboardData = () => {
     font-size: 14px;
     font-weight: 500;
 }
-/* 定义快捷入口图标颜色 */
+
 .icon-inbound { background-color: #36a3f7; }
 .icon-outbound { background-color: #f4516c; }
 .icon-return { background-color: #f6b26b; }

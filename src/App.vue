@@ -7,6 +7,7 @@ import { RouterView } from 'vue-router'
 </script>
 
 <style>
+/* 全局基础样式 */
 html,
 body,
 #app {

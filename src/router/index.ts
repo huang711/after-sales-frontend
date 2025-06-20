@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Layout from '@/layout/Layout.vue'; // 导入主布局
-import { useUserStore } from '@/stores/user';
-import { ElMessage } from 'element-plus';
+import Layout from '@/layout/Layout.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,8 +12,8 @@ const router = createRouter({
     },
     {
       path: '/',
-      component: Layout, // 所有在此根路径下的页面都使用 Layout 布局
-      redirect: '/dashboard', // 访问'/'时，自动重定向到'/dashboard'
+      component: Layout,
+      redirect: '/dashboard',
       children: [
         {
           path: 'dashboard',
@@ -23,38 +21,104 @@ const router = createRouter({
           component: () => import('@/views/HomeView.vue'),
           meta: { title: '主控台', requiresAuth: true }
         },
-        // TODO: 在这里添加其他业务页面的路由
-        // 例如:
-        // {
-        //   path: '/base/users',
-        //   name: 'users',
-        //   component: () => import('@/views/base/UserManagement.vue'),
-        //   meta: { title: '用户管理', requiresAuth: true }
-        // }
+        // --- 基础数据管理 ---
+        {
+          path: 'base/users',
+          name: 'UserManagement',
+          component: () => import('@/views/base/UserManagement.vue'),
+          meta: { title: '用户管理', requiresAuth: true }
+        },
+        {
+          path: 'base/customers',
+          name: 'CustomerManagement',
+          component: () => import('@/views/base/CustomerManagement.vue'),
+          meta: { title: '客户管理', requiresAuth: true }
+        },
+        {
+          path: 'base/suppliers',
+          name: 'SupplierManagement',
+          component: () => import('@/views/base/SupplierManagement.vue'),
+          meta: { title: '供应商管理', requiresAuth: true }
+        },
+        {
+          path: 'base/projects',
+          name: 'ProjectManagement',
+          component: () => import('@/views/base/ProjectManagement.vue'),
+          meta: { title: '项目管理', requiresAuth: true }
+        },
+        {
+          path: 'base/categories',
+          name: 'ProductCategoryManagement',
+          component: () => import('@/views/base/ProductCategoryManagement.vue'),
+          meta: { title: '商品类别管理', requiresAuth: true }
+        },
+        // --- 核心业务模块 ---
+        {
+          path: 'business/products',
+          name: 'ProductManagement',
+          component: () => import('@/views/business/ProductManagement.vue'),
+          meta: { title: '商品型号管理', requiresAuth: true }
+        },
+        {
+          path: 'business/instances',
+          name: 'ProductInstanceManagement',
+          component: () => import('@/views/business/ProductInstanceManagement.vue'),
+          meta: { title: '库存实例管理', requiresAuth: true }
+        },
+        // ★★★ 在这里补全剩下的核心业务模块路由 ★★★
+        {
+          path: 'business/warehousing',
+          name: 'WarehousingManagement',
+          component: () => import('@/views/business/WarehousingManagement.vue'),
+          meta: { title: '入库管理', requiresAuth: true }
+        },
+        {
+          path: 'business/delivery',
+          name: 'DeliveryManagement',
+          component: () => import('@/views/business/DeliveryManagement.vue'),
+          meta: { title: '出库管理', requiresAuth: true }
+        },
+        {
+          path: 'business/returns',
+          name: 'ReturnManagement',
+          component: () => import('@/views/business/ReturnManagement.vue'),
+          meta: { title: '退货管理', requiresAuth: true }
+          
+        },
+        // ... 其他 children 路由 ...
+{
+  path: 'business/returns', // 这是你之前已有的最后一条路由
+  name: 'ReturnManagement',
+  component: () => import('@/views/business/ReturnManagement.vue'),
+  meta: { title: '退货管理', requiresAuth: true }
+},
+// ★★★ 在这里添加新的路由规则 ★★★
+{
+  path: '/profile', 
+  name: 'Profile',
+  component: () => import('@/views/profile/index.vue'),
+  meta: { title: '个人中心', requiresAuth: true }
+}
       ]
     }
   ]
 });
 
-// 全局前置路由守卫 (与之前相同，但为了完整性再次提供)
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore();
-  const isLoggedIn = !!userStore.token;
+  const token = localStorage.getItem('token');
+  const isLoggedIn = !!token;
 
-  // 检查路由是否需要认证
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.meta.requiresAuth) {
     if (isLoggedIn) {
-      next(); // 已登录，放行
+      next();
     } else {
-      // 未登录，重定向到登录页
       next({ name: 'login', query: { unauthorized: 'true' } });
     }
   } else {
-    // 如果目标路由不需要认证
     if (isLoggedIn && to.name === 'login') {
-      next({ name: 'dashboard' }); // 已登录状态下访问登录页，直接跳转到主控台
+      next({ name: 'dashboard' });
     } else {
-      next(); // 正常放行
+      next();
     }
   }
 });
